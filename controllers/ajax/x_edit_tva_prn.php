@@ -16,7 +16,7 @@
  group by reg_remise, reg_mode order by reg_remise
  */
 	session_start();
-	ob_end_clean ();
+// 	ob_end_clean ();
 
 	require('x_common.inc.php');
 	

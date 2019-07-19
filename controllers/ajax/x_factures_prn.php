@@ -1,7 +1,7 @@
 <?php
 
 	session_start();
-	ob_end_clean ();
+// 	ob_end_clean ();
 
 	require('x_common.inc.php');
 	
