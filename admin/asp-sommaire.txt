@@ -1,0 +1,80 @@
+
+-séjours	
+
+SelectCommand="SELECT UniqID, 'du ' + CONVERT (CHAR, DateDebut, 103) + ' au ' + CONVERT (CHAR, DateFin, 103) + ' : ' + Libelle AS Séjour FROM Sejour ORDER BY DateDebut DESC"
+
+			**Caractéristiques du séjour
+			
+			SelectCommand="SELECT UniqID, DateDebut, DateFin, Libelle, NbMax, Complet FROM Sejour WHERE (UniqID = @Param1)"
+			
+			**Ajout/Modification d'un participant
+			
+			SelectCommand="SELECT UPPER(Client.Nom) + ' ' + Client.Prenom AS Participant, SejourClient.UniqIDClient, Client.EMail1 AS Email, SejourClient.Etat, SejourClient.Commentaire, FactureEntete.NumeroFacture, FactureEntete.TotalHT, FactureEntete.DateFacture, FactureEntete.TotalTTC, FactureEntete.TotalTVA, FactureEntete.Arrhes FROM SejourClient INNER JOIN FactureEntete ON SejourClient.UniqIDFacture = FactureEntete.UniqId LEFT OUTER JOIN Client ON SejourClient.UniqIDClient = Client.UniqID ORDER BY Client.Nom, Client.Prenom"
+            UpdateCommand="UPDATE [SejourClient] SET [Etat] = ?, [Commentaire] = ? WHERE (([UniqIDSejour] = ?) OR ([UniqIDSejour] IS NULL AND ? IS NULL)) AND (([UniqIDClient] = ?) OR ([UniqIDClient] IS NULL AND ? IS NULL))"
+			
+			**Détails des prestations
+			
+			SelectCommand="SELECT UPPER(FactureEntete.Nom) + ' ' + FactureEntete.Prenom AS NomClient, FactureEntete.UniqIDClient, SejourClient.Etat, FactureEntete.NumeroFacture, FactureLigne.UniqIDFacture, FactureLigne.UniqIDPrestation, FactureLigne.Descriptif, FactureLigne.Quantite, FactureLigne.PU, FactureLigne.PrixTTC, FactureLigne.TotalHT, FactureLigne.TauxTVA, FactureLigne.TotalTTC, @Param2 AS IDSejour FROM FactureLigne INNER JOIN FactureEntete ON FactureLigne.UniqIDFacture = FactureEntete.UniqId INNER JOIN SejourClient ON FactureLigne.UniqIDFacture = SejourClient.UniqIDFacture WHERE (FactureLigne.UniqIDPrestation IN (SELECT UniqID FROM Prestation WHERE (CodeTypePrestation = @Param1))) AND (FactureLigne.UniqIDFacture IN (SELECT UniqIDFacture FROM SejourClient AS SejourClient_1 WHERE (UniqIDSejour = @Param2) AND (Etat &lt; 2))) ORDER BY FactureEntete.Nom, FactureEntete.Prenom"
+
+			
+-clients
+
+SelectCommand="SELECT UniqIDSejour, UniqIDClient, DateSysSaisie, DateDebut, DateFin, Etat, Commentaire, UniqIDFacture, Jeunes, Taille, PHAvant, PHApres, PoidsAvant, PoidsApres, GraissesAvant, GraissesApres, H2OAvant, H2OApres, GraisseVisceraleAvant, GraisseVisceraleApres, MusclesAvant, MusclesApres, MasseOsseuseAvant, MasseOsseuseApres, AgeMetaboliqueAvant, AgeMetaboliqueApres, MetabolismeDeBase FROM SejourClient WHERE (UniqIDClient = @UniqIDClient) AND (DateFin &gt; GETDATE())"
+			
+			**Fiche client
+			
+			SelectCommand="SELECT UniqID, Civilite, Nom, Prenom, Etage, Batiment, Rue, Complement, CodePostal, Ville, Pays, TelFixe1, TelPortable1, EMail1, DateNaissance, ExonereTVA, CompteCollectif, Masculin FROM Client WHERE (UniqID = @Param1)"
+			
+			**Séjours clients
+			
+			SelectCommand="SELECT UniqIDSejour, UniqIDClient, DateSysSaisie, DateDebut, DateFin, Etat, Commentaire FROM SejourClient WHERE (UniqIDClient = @UniqIDClient) AND (DateFin &gt; GETDATE())"
+			
+			**Factures / règlements
+			
+			SelectCommand="SELECT SejourClient.UniqIDSejour, SejourClient.UniqIDClient, SejourClient.DateSysSaisie, SejourClient.DateDebut, SejourClient.DateFin, SejourClient.Etat, SejourClient.Commentaire, SejourClient.UniqIDFacture, FactureEntete.NumeroFacture, SejourClient.Jeunes, SejourClient.Taille, SejourClient.PHAvant, SejourClient.PHApres, SejourClient.PoidsAvant, SejourClient.PoidsApres, SejourClient.GraissesAvant, SejourClient.GraissesApres, SejourClient.H2OAvant, SejourClient.H2OApres, SejourClient.GraisseVisceraleAvant, SejourClient.GraisseVisceraleApres, SejourClient.MusclesAvant, SejourClient.MusclesApres, SejourClient.MasseOsseuseAvant, SejourClient.MasseOsseuseApres, SejourClient.AgeMetaboliqueAvant, SejourClient.AgeMetaboliqueApres, SejourClient.MetabolismeDeBase FROM SejourClient LEFT OUTER JOIN FactureEntete ON SejourClient.UniqIDFacture = FactureEntete.UniqId WHERE (SejourClient.UniqIDClient = @UniqIDClient) AND (SejourClient.DateFin &lt;= GETDATE())"
+			SelectCommand="SELECT FactureEntete.UniqId, FactureEntete.UniqIDClient, FactureEntete.NumeroFacture, FactureEntete.TotalHT, FactureEntete.DateFacture, FactureEntete.Arrhes, FactureEntete.TotalTTC, FactureEntete.TotalTVA, FactureEntete.TotalTTC-FactureEntete.TotalRegle as ResteAPayer, SejourClient.UniqIDSejour FROM FactureEntete INNER JOIN SejourClient ON FactureEntete.UniqIDClient = SejourClient.UniqIDClient AND FactureEntete.UniqId = SejourClient.UniqIDFacture WHERE (FactureEntete.UniqIDClient = @UniqIDClient) ORDER BY FactureEntete.DateFacture"
+
+			
+-factures
+			
+			**Prestations facturées
+			
+			SelectCommand="SELECT UniqIDFacture, NumeroLigne, UniqIDPrestation, Descriptif, Quantite, PrixTTC, PU, TotalHT, TauxTVA, TotalTTC FROM FactureLigne WHERE (UniqIDFacture = @Param1) ORDER BY NumeroLigne"
+			SelectCommand="SELECT UniqID, CodeTypePrestation + ' ' + Libelle AS Detail FROM Prestation WHERE (NOT (UniqID IN (SELECT UniqIDPrestation FROM FactureLigne WHERE (UniqIDFacture = @Param1)))) ORDER BY Detail"
+			
+			Reglements effectués
+			SelectCommand="SELECT Reglement.UniqID, Reglement.ModeReglement, Reglement.Libelle, Reglement.DateRemise, Reglement.DateReglement, Reglement.Montant, Reglement.ReglementPartiel, ReglementRepartition.UniqIDFacture, ReglementRepartition.Montant AS Réglé FROM ReglementRepartition INNER JOIN Reglement ON ReglementRepartition.UniqIDReglement = Reglement.UniqID WHERE (ReglementRepartition.UniqIDFacture = @Param1)"
+
+			
+-Sélection Séjour / Client à facturer
+
+			**Sélection d un séjour
+			
+			SelectCommand="SELECT UniqID, 'Séjour n°' + CAST(UniqID AS CHAR) + ' du ' + CONVERT (CHAR, DateDebut, 103) + ' au ' + CONVERT (CHAR, DateFin, 103) + ' : ' + Libelle AS Séjour FROM Sejour ORDER BY DateDebut DESC"
+			
+			**Sélection d un Participant
+			
+			SelectCommand="SELECT UniqID, UPPER(Nom) + ', ' + Prenom + ' ( ' + Ville + ' ' + Pays + ')' AS NomClient FROM Client WHERE (UniqID IN (SELECT UniqIDClient FROM SejourClient WHERE (UniqIDSejour = @Param1))) ORDER BY Nom, Prenom, Ville, Pays"
+
+			
+-Liste des reglements clients affectés à des factures
+
+SelectCommand="SELECT Reglement.*, ReglementRepartition.Montant AS Réglé, CLient.uniqID as MyUniqIDCLient, UPPER(Client.Nom) + ' ' + Client.Prenom AS NomClient, Client.CodePostal, Client.Ville, Client.Pays, Client.TelFixe1, Client.TelPortable1, Client.EMail1, ReglementRepartition.UniqIDFacture, FactureEntete.NumeroFacture, FactureEntete.TotalTTC, FactureEntete.DateFacture FROM Reglement RIGHT OUTER JOIN ReglementRepartition ON Reglement.UniqID = ReglementRepartition.UniqIDReglement INNER JOIN SejourClient ON ReglementRepartition.UniqIDFacture = SejourClient.UniqIDFacture INNER JOIN Client ON SejourClient.UniqIDClient = Client.UniqID INNER JOIN FactureEntete ON SejourClient.UniqIDFacture = FactureEntete.UniqId"
+
+			Reglement sélectionné
+			SelectCommand="SELECT FactureEntete.UniqId, FactureEntete.UniqIDClient, FactureEntete.NumeroFacture, FactureEntete.TotalHT, FactureEntete.DateFacture, FactureEntete.Arrhes, FactureEntete.TotalTTC, FactureEntete.TotalTVA, FactureEntete.Nom+' '+ FactureEntete.Prenom as  NomClient, FactureEntete.CodePostal, FactureEntete.Ville, FactureEntete.Pays, FactureEntete.TotalRegle FROM ReglementRepartition INNER JOIN FactureEntete ON ReglementRepartition.UniqIDFacture = FactureEntete.UniqId WHERE (ReglementRepartition.UniqIDReglement = @UniqIDReglement)"
+
+
+-Liste des règlements non affectés
+
+SelectCommand="SELECT UniqID, ModeReglement, Libelle, DateRemise, DateReglement, Montant, 0 AS [Déjà réglé] FROM Reglement WHERE (ReglementPartiel = @Param1)"
+        
+			**Sur le séjour
+			
+			SelectCommand="SELECT UniqID, 'Séjour n°' + CAST(UniqID AS CHAR) + ' du ' + CONVERT (CHAR, DateDebut, 103) + ' au ' + CONVERT (CHAR, DateFin, 103) + ' : ' + Libelle AS Séjour FROM Sejour ORDER BY DateDebut DESC"
+			
+			**et le Participant
+			
+			SelectCommand="SELECT UniqID, UPPER(Nom) + ', ' + Prenom + ' ( ' + Ville + ' ' + Pays + ')' AS NomClient FROM Client WHERE (UniqID IN (SELECT UniqIDClient FROM SejourClient WHERE (UniqIDSejour = @Param1) AND (UniqIDFacture &lt;&gt; 0))) ORDER BY Nom, Prenom, Ville, Pays"
+			
+			

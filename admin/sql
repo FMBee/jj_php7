@@ -1,0 +1,22 @@
+
+*- reglements en 3 fois
+
+SELECT rli_reg_id, count(rli_reg_id) as ccr 
+FROM `reglements_lignes` 
+group by rli_reg_id 
+having ccr=3 
+order by ccr desc 
+
+*-- liste des activites choisies par un client : clients_activites_selected
+
+SELECT ifnull(cac_cli_id, 0) ,
+       act_id,
+       act_title,
+       act_aca_id,
+       aca_title
+  FROM (activites
+        INNER JOIN  activites_categories
+           ON (act_aca_id = aca_id))
+       LEFT OUTER JOIN clients_activites
+          ON (cac_act_id = act_id)
+  ORDER BY act_id ASC

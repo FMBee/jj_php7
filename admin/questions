@@ -1,0 +1,157 @@
+
+
+- hash des GET fichemode direct
+
+- conflit metisMenu
+
+=======================
+
+{extends file = 'tform.tpl'}
+
+{block name=config}{config_load file = 'clients.cfg' section = $smarty.session.__user_lang__}{/block}
+
+{block name=title}{#title#}{/block}
+{block name=subtitle}{#subtitle#}{$title}{/block}
+{block name=form}
+    <form role="form" action="?action=clients" method="post" id="fclients">
+    
+    	{include file='clients.inc.tpl'}
+
+        <button type="submit" class="btn btn-success">{#btnSubmit#}</button>
+        <button type="reset" class="btn btn-danger">{#btnReset#}</button>
+     </form>
+{/block}  
+
+===============================
+
+Find data using row indexes:
+
+var table = $('#example').DataTable();
+ 
+// Find indexes of rows which have `Yes` in the second column
+var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
+    return table.cell( rowIdx, 1 ).data() === 'Yes' ? true : false;
+} );
+ 
+// Add a class to those rows using an index selector
+table.rows( indexes )
+    .nodes()
+    .to$()
+    .addClass( 'highlight' );
+    
+=============================================================
+
+- le tableau recap sejours est-il juste ? (25/09/16 ?
+- prestations des base par séjour +lignes fact. spécifiques ?
+- sej_complet auto ?
+- éléments métaboliques en fiche sejour ?
+
+- comment marchent les reglemnents (saisie, affectation) / règlements sans factures ?
+- remise en banque (dans facture ? dans liste des reglements ?)
+- reg_partiel (7/5242) ?
+
+- factures brouillon // validation / verrouillage / modification
+- comment ajouter une prestation à un client --> saisie d'une facture
+- modifier prochain numfac ?
+- cli_exotva, pre_prixttc ? 
+	 
+- champs etage, batiment vides ? non
+
+- par_ProchainNumeroFacture       
+  par_ProchainLotComptabilite     
+  par_FactureOptionDate           
+  par_ComptabiliteLongueurCompte  
+	
+
+- reglts multiples : 
+
+SELECT reg_id, reg_montant, reg_date, reg_partiel, reg_etat, rli_fac_id, fac_cli_id, fac_totalttc, rli_montant, rli_pourcent
+from reglements join reglements_lignes 
+on reg_id=rli_reg_id join factures on rli_fac_id=fac_id where rli_fac_id=836 or rli_fac_id=837
+order by reg_id, rli_fac_id
+
+?? 2 lignes mm facture mm reglt
+1708 	810 	2012-10-28 00:00:00 	0 	0 	836 	342 	636 	80 		-1
+1708 	810 	2012-10-28 00:00:00 	0 	0 	836 	342 	636 	100 	-1
+
+SELECT fac_id,fac_totalttc,fli_numlig, fli_totalttc from `factures` join factures_lignes on fac_id=fli_fac_id where fac_id =836 
+ fac_id 	fac_totalttc 	fli_numlig 	fli_totalttc 	
+836 	636 	0 	120
+836 	636 	1 	190.9
+836 	636 	2 	309.1
+836 	636 	3 	-120
+836 	636 	4 	80
+836 	636 	5 	56
+
+
+- reg_partiel ?  7/5254
+select * from reglements where reg_partiel != 0
+
+-reg_etat
+ reg_etat 	count(reg_etat) 	
+	0 			4487
+	2 			767
+
+- fact_etat 
+SELECT fac_etat, count(fac_etat)
+FROM factures
+group by fac_etat
+=
+ fac_etat 	count(fac_etat) 	
+	-1 			13		annulée ?
+	0 			67		non réglé ou en cours
+	1 			1837	réglé
+	2 			327		réglé (ancien)
+
+-scl_etat
+SELECT scl_etat, count(*) FROM `sejours_clients` group by scl_etat
+=
+ scl_etat 	count(*) 	
+0 	275		préinscrit
+1 	2213	confirmé
+2 	41		annulé	
+3 	7		retardé
+
+SELECT scl_cli_id, scl_etat, scl_fac_id, fac_id, fac_etat, fac_totalttc, fac_arrhes, fac_totalregle 
+FROM `sejours_clients` left join factures on scl_fac_id=fac_id  
+where scl_etat = 0 and scl_fac_id != 0
+ORDER BY `scl_sej_id` DESC
+=52
+= confirmés non facturés (acompte)
+
+SELECT scl_cli_id, scl_etat, scl_fac_id, fac_id, fac_etat, fac_totalttc, fac_arrhes, fac_totalregle 
+FROM `sejours_clients` left join factures on scl_fac_id=fac_id  
+where scl_etat = 0  
+ORDER BY `scl_sej_id` DESC
+=275
+
+SELECT scl_cli_id, scl_etat, scl_fac_id, fac_id, fac_etat, fac_totalttc, fac_arrhes, fac_totalregle 
+FROM `sejours_clients` left join factures on scl_fac_id=fac_id  
+where scl_etat = 0 and scl_fac_id = 0
+ORDER BY `scl_sej_id` DESC
+=233
+=prospects/préinscrits
+
+SELECT scl_cli_id, scl_etat, scl_fac_id, fac_id, fac_etat, fac_totalttc, fac_arrhes, fac_totalregle 
+FROM `sejours_clients` left join factures on scl_fac_id=fac_id  
+where scl_etat = 0 and scl_fac_id = 0 and not isnull(fac_id)
+ORDER BY `scl_sej_id` DESC
+=0
+
+SELECT scl_cli_id, scl_etat, scl_fac_id, fac_id, fac_numero, fac_etat, fac_totalttc, fac_arrhes, fac_totalregle 
+FROM `sejours_clients` left join factures on scl_fac_id=fac_id  
+where scl_cli_id=3188 or scl_cli_id=3187
+ORDER BY `scl_sej_id` DESC
+=
+scl_cli_id 	scl_etat 	scl_fac_id 	fac_id 	fac_numero 	fac_etat 	fac_totalttc 	fac_arrhes 	fac_totalregle 	
+3188 	0 	2391 	2391 	NULL	0 	1800 	0 	0
+3187 	0 	0 		NULL	NULL	NULL	NULL	NULL	NULL
+
+**********************
+
+- prestatypes, civilites : ajout ?
+
+- clients : longueur tableau
+
+- flags dans tables
+

@@ -1,0 +1,80 @@
+
+- serveur JJ production :
+	http://51.254.12.70  
+	jeunerjoli
+	Jjen2016
+
+- log appli root : root2015 / 2015root
+
+- PhpMyAdmin : jj_root / KZBbVzWjaTbw8y6r
+
+- rajout d'un champ saisi dans la base
+	- modifier la table
+	- modifier la procstock d'enregistrement
+	- réactualiser les views et views liées
+	- modifier le model / appel procstock
+	- modifier le controller/action (préparation ajout)
+	- modifier le views/config
+	- modifier le tpl de saisie
+	- modifier le footer si besoin
+	- modifier le controller/action de chargement si besoin (login)
+
+- //CODE:
+
+- préfixes fichiers
+	config 		: 
+	controllers : c_
+	  action 	: a_
+	  ajax 		: x_
+	models 		: m_
+	views		: v_
+	  pages		: p_
+	  config	: g_
+	  footers	: f_
+	sql			: s_
+
+- delim. Smarty <§  §> / ~{ }~ 
+
+- hash("test")= $2y$10$Juy5Rwhxkmf1xDHcYFfBD.207VnADuvrDSHOLEu5JKpJu49oiZHCy
+
+
+- Eclipse : Alt-Maj-A pour mode colonne 
+
+- si pas d'option [value] et [name] dans un <input> : le champ ne passe pas dans le post !
+
+
+
+
+
+
+- pas de messages d'erreurs serveur
+	.le display_errors est mal réglé dans php.ini
+
+- galere soudaine avec le modifier 'strip' : refusé (|strip:'&nbsp;')
+	.version de Smarty ?
+	.non : mauvais paramétrage de $pluginDir...
+	attention au setPluginDir ! les modifiers sont des plugins... (->addPluginDir()
+
+- en héritage tpl, un block non défini est simplement ignoré
+
+- les constantes basées sur __DIR__ fonctionnent pour les
+  include php, mais pas pour :
+	. les include ou extends Smarty
+	. les liens html (href, src, ...)
+	à cause des \ et car chemins absolus
+
+- charger http://startbootstrap.com/template-overviews/sb-admin-2/
+
+- attention aux paths dans les tpl
+	news.tpl : {extends file="views/layouts/tview.tpl"} 
+	-> constantes ! -> include path
+
+- le tpl peut-il inclure du php ? 
+	-> oui, balise {php} /non recommandé/deprecated/voir plugins
+
+- menu.tpl
+	.tout est en dur
+	.faire une table des menus ou fichier XML  
+	-> fichier de configuration {config_load file='foo.conf'}
+
+- Eclipse pour rechercher un fichier : pas Ctrl-H mais Ctrl-Shift-R (Open Resource)
