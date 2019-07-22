@@ -14,7 +14,7 @@ PROCEDURE `users_mjad`(IN _usr_id           INT(255),
 BEGIN
    DECLARE sortie   TIMESTAMP;
 
-   IF usr_id <= 0
+   IF _usr_id <= 0
    THEN
       INSERT INTO users(usr_first_name,
                         usr_last_name,
@@ -35,7 +35,7 @@ BEGIN
    ELSE
       SET sortie = NULL;
 
-      IF usr_out = 1
+      IF _usr_out = 1
       THEN
          SET sortie = now();
       END IF;

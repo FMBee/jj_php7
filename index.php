@@ -15,10 +15,10 @@
 	// Debugging
 	
 	error_reporting(0);
-// 	error_reporting($_SERVER['__app_params__']['__APP_DEBUG__'] ? E_ALL : null );
+	error_reporting($_SERVER['__app_params__']['__APP_DEBUG__'] ? E_ALL : null );
 
-// 	debug('GET:');debug($_GET);
-// 	debug('POST:');debug($_POST);
+	debug('GET:');debug($_GET);
+	debug('POST:');debug($_POST);
 // 	debug('SESSION 1:');debug($_SESSION);
 // 	debug('SERVER:');debug($_SERVER);
 	
@@ -121,7 +121,8 @@
 			$oSmarty->display(__VIEWS_PAGES__ .'p_login.tpl');
 		}
 	}
-	debug('SESSION 2:');debug($_SESSION);
+	
+// 	debug('SESSION 2:');debug($_SESSION);
 	
 	
 // 	ob_end_flush();

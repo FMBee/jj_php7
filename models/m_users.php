@@ -58,7 +58,7 @@ class Users
    	public static function majOrAdd($pdo, $data)
    	// Ajouter ou modifier un enregistrement
    	{
-   		$req = $pdo->prepare("CALL users_mjad(".substr(str_repeat('?,', 10), 0, -1).")");
+   	    $req = $pdo->prepare("CALL users_mjad(".substr(str_repeat('?,', count($data)), 0, -1).")");
    		 
    		$insert = $req->execute(array(	
 						   				$data['key'],
@@ -72,7 +72,8 @@ class Users
 						   				$data['usr_image_path'],
 						   				$data['out_user']
 						   		));
-   		return ($insert);
+   		
+   		return ( $insert ? $insert : $req->errorInfo() );
    	}
 }
 	

@@ -16,7 +16,7 @@
 		$_POST['cli_prenom']	= ucfirst(strtolower($_POST['cli_prenom']));
 		$_POST['cli_ville']		= strtoupper($_POST['cli_ville']);
 		
-		debug(Clients::majOrAdd($pdo, $_POST));
+		Clients::majOrAdd($pdo, $_POST);
 	}
 	
 ?>

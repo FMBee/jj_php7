@@ -2,6 +2,7 @@
 
 	if(isset($_POST['key']))
 		{
+		unset($_POST['pwd']);    
 		array_filter($_POST, 'trim_value');
 
 		if ($_POST['usr_password'] != __PWD_INIT__)		//un mot de passe a été saisi
@@ -27,11 +28,14 @@
 			$_POST['usr_pro_id'] = $_SESSION['__user_pro_id__'];
 		}
 		
+		$_POST['usr_lang'] = 'fr';
 		if (! $_SERVER['__app_params__']['__APP_INTERNATIONAL__'])	$_POST['usr_lang'] = $_SESSION['__user_lang__'];
 		
+		$_POST['usr_image_path'] = NULL;
 		if (! $_SERVER['__app_params__']['__APP_USER_LOGO__'])		$_POST['usr_image_path'] = $_SESSION['__user_image__'];
 		
-		Users::majOrAdd($pdo, $_POST);	
+		debug($_POST);
+		debug(Users::majOrAdd($pdo, $_POST));	
 		
 		if ($_SESSION['__user_id__'] == $_POST['key']) 	//user modifié = user loggé
 			{
