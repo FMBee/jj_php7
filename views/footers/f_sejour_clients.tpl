@@ -332,7 +332,9 @@
 			    	_url = _url.replace(_reg, 'cp='+$(this).is(":checked"));
 			    	$('#modal-addclient-introvalue').autocomplete().setOptions({ serviceUrl: _url });
 			    });
+			    
 		        $('#modal-addclient-introvalue').autocomplete({
+		        
 		    	    serviceUrl: _url,
 		    	    minChars: 2,
 		    	    showNoSuggestionNotice: true,
@@ -347,25 +349,12 @@
 			            	$('#modal-addclient-addrecord').show();
 		    	    	}
 		    	});
-// 	            $('#data-modal-addclient').children('tbody').on( 'click', 'tr', function () {
-
-//                     table3.$('tr.danger').removeClass('danger');
-//                     $(this).addClass('danger');
-                    
-// 	            	$('#modal-addclient-addrecord').show();
-// 	            	$('#modal-addclient-paramclient').val( $(this).attr('id') );	
-// 	            });
 	            
 	            $('#modal-addclient-addrecord').on('click', function () {
 	            	
 		            	$('#modal-faddclient').submit();
 		        });
 	            
-// 	            $('#modal-supclient-yes').on('click', function () {
-	            	
-// 	            	$('#modal-fsupclient').submit();
-// 		        });
-		        
 	            
 	            //******** prestations
 	            

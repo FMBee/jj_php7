@@ -34,8 +34,8 @@
 		$_POST['usr_image_path'] = NULL;
 		if (! $_SERVER['__app_params__']['__APP_USER_LOGO__'])		$_POST['usr_image_path'] = $_SESSION['__user_image__'];
 		
-		debug($_POST);
-		debug(Users::majOrAdd($pdo, $_POST));	
+// 		debug($_POST);
+		Users::majOrAdd($pdo, $_POST);	
 		
 		if ($_SESSION['__user_id__'] == $_POST['key']) 	//user modifié = user loggé
 			{

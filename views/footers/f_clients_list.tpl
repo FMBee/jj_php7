@@ -14,9 +14,16 @@
 	                "pageLength": 10,
 	                ~{include file="p_datatable_language.inc.tpl"}~
 				});
+				
+				~{if !empty($introvalue)}~
+				
+					 $('#data-clients_filter label input').css('background-color', 'orange');
+					 
+				~{/if}~
 		        
-		        $('#data-clients_filter input').keyup( function () {
-					//alert('top');
+		        $('#data-clients_filter label input').keyup( function () {
+					
+					$(this).css('background-color', ($(this).val().trim() == '' ? 'white' : 'orange' ));
 		        } );
 		        
 	            $('.table').children('tbody').on( 'click', 'tr', function () {

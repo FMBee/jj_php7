@@ -40,6 +40,10 @@
 		
 	
    /// Paramètres 
+   
+	//- parametres session
+	
+// 	$_SESSION['__client_seek'] = '';
 
   	//- Table parametres application
 	
@@ -79,4 +83,3 @@
 		}
 	}
 
-?>	

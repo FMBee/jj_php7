@@ -18,6 +18,7 @@
 	else {
 		$debut = date_create_from_format('d/m/Y', $debut);
 	}
+	
 	$oSmarty->assign('sejours', Sejours::getValid($pdo, date_format( $debut, 'Y/m/d')));
 
 ?>

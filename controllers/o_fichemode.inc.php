@@ -13,18 +13,19 @@
 	if (isset($_POST['paramkey'])) {	// depuis liste
 
 		$_SESSION['__variables__'][$_file_] = [];	
-		$_SESSION['__variables__'][$_file_]['_POST'] = $_POST;	//sauvegarde
+		$_SESSION['__variables__'][$_file_]['_POST'] = array_map('trim', $_POST);	//sauvegarde
 		
 		$noparam = false;
-		$param = $_POST;
+		$param = array_map('trim', $_POST);
 		$oSmarty->assign('fichemode', 'liste');
 	}
+	
 	if (isset($_GET['paramkey'])) { 	// en direct
 	
 		$_SESSION['__variables__'][$_file_] = [];
-		$_SESSION['__variables__'][$_file_]['_GET'] = $_GET;	//sauvegarde
+		$_SESSION['__variables__'][$_file_]['_GET'] = array_map('trim', $_GET);	//sauvegarde
 		$noparam = false;
-		$param = $_GET;
+		$param = array_map('trim', $_GET);
 		$oSmarty->assign('fichemode', 'direct');
 	}
 	
