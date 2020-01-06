@@ -70,7 +70,7 @@ function moins10pourcentArrondi($valeur) {
 }
 
 
-class phpToPDF extends FPDF {
+class C_phpToPDF extends C_FPDF {
 	
 	var $legends;
 	var $wLegend;

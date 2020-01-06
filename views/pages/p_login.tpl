@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html   ~{if isset($smarty.session.__user_lang__)}~ 
-		lang="~{$smarty.session.__user_lang__}~" 
-		~{else}~ 
-		lang="fr" 
+<html   ~{if isset($smarty.session.__user_lang__)}~
+		lang="~{$smarty.session.__user_lang__}~"
+		~{else}~
+		lang="fr"
 		~{/if}~
 >
 
@@ -15,7 +15,7 @@
     <meta name="author" content="">
 
     <title>~{$smarty.const.__APP_TITLE__}~</title>
-	
+
     <link href="~{$smarty.const.__WEB_LIB_BOOTSTRAP__}~dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="~{$smarty.const.__WEB_LIB_THEME__}~dist/css/sb-admin-2.css" rel="stylesheet">
     <link href="~{$smarty.const.__WEB_LIB_BOWER__}~font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -32,7 +32,7 @@
 </head>
 
 
-<body>
+<body style="background: white url('~{$smarty.const.__VIEWS_IMG__}~bg_login.jpg') no-repeat center center fixed;">
 
     <div class="container">
         <div class="row">
@@ -42,26 +42,26 @@
                         <h3 class="panel-title">Bienvenue dans Gestion JoliJeûne</h3>
                     </div>
                     <div class="panel-body">
-                    
+
 <!--                    <form action="login-index.html" class="login-wrapper" method="post"> -->
-                    
+
                         <form action="index.php?action=login&page=index" method="POST" role="form" id="flogin" name="flogin">
-                        
+
 						 ~{if $smarty.server.__app_params__['__APP_MAINTAIN__']}~
-										
+
 			                <div class="content">
 								<p>
 								Le site est actuellement en maintenance<br/><br/>
-								Merci de votre compréhension<br/><br/>						
+								Merci de votre compréhension<br/><br/>
 								</p>
 							</div>
 			                <div class="actions">
 			                  <a class="btn btn-success" href="index.html">Réessayer</a>
 			                  <div class="clearfix"></div>
 			                </div>
-						
+
 						 ~{else}~
-                        
+
                             <fieldset>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Identifiant" name="login" type="login" autofocus>
@@ -79,14 +79,14 @@
                             </fieldset>
 
 						 ~{/if}~
-						 
+
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
 	<script src="~{$smarty.const.__WEB_LIB_BOWER__}~bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="~{$smarty.const.__WEB_LIB_THEME__}~dist/js/sb-admin-2.js"></script>
 

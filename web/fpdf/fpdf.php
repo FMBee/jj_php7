@@ -8,10 +8,10 @@
  *                                                                              *
  * Vous pouvez utiliser et modifier ce logiciel comme vous le souhaitez.        *
  *******************************************************************************/
-if (! class_exists ( 'FPDF' )) {
+if (! class_exists ( 'C_FPDF' )) {
 	define ( 'FPDF_VERSION', '1.53' );
 	
-	class FPDF {
+	class C_FPDF {
 		// Private properties
 		var $page; // current page number
 		var $n; // current object number
@@ -502,6 +502,7 @@ if (! class_exists ( 'FPDF' )) {
 			$fontkey = $family . $style;
 			if (! isset ( $this->fonts [$fontkey] )) {
 				// Check if one of the standard fonts
+				
 				if (isset ( $this->CoreFonts [$fontkey] )) {
 					if (! isset ( $fpdf_charwidths [$fontkey] )) {
 						// Load metric file
@@ -522,7 +523,7 @@ if (! class_exists ( 'FPDF' )) {
 							'cw' => $fpdf_charwidths [$fontkey] 
 					);
 				} else
-					$this->Error ( 'Undefined font: ' . $family . ' ' . $style );
+					$this->Error ( '-> Undefined font: ' . $family . ' ' . $style );
 			}
 			// Select it
 			$this->FontFamily = $family;
@@ -1147,7 +1148,7 @@ if (! class_exists ( 'FPDF' )) {
 		function _putimages() {
 			$filter = ($this->compress) ? '/Filter /FlateDecode ' : '';
 			reset ( $this->images );
-			while ( list ( $file, $info ) = each ( $this->images ) ) {
+			foreach (  $this->images as $file => $info ) {
 				$this->_newobj ();
 				$this->images [$file] ['n'] = $this->n;
 				$this->_out ( '<</Type /XObject' );
