@@ -5,7 +5,7 @@
 
 	if (! isset($_SESSION['__log_try__']))
 	{
-		$_SESSION['__log_try__'] = 0; 
+		$_SESSION['__log_try__'] = 0;
 	}
 
 	$logErr = "";
@@ -16,9 +16,9 @@
 		if (password_verify($_POST["password"], $data['usr_password']))
 			{
 			$_SESSION['__user_id__']	= $data['usr_id'];
-			
+
 			maj_user_ss($data);
-			
+
 //			maj_options_ss($data);
 		}
 		else
@@ -39,18 +39,18 @@
 			{
 			$_SESSION['__log_try__'] = 0;
 
-			if (isset($data['pro_access']) && $data['pro_access'] > __ADMIN_MINACCESS__)  
+			if (isset($data['pro_access']) && $data['pro_access'] > __ADMIN_MINACCESS__)
 				{
-				header('Location: errorpage.' . traductLib('msgLogin2') . '.htm');		
-			} 
-			else 
+				header('Location: errorpage.' . traductLib('msgLogin2') . '.htm');
+			}
+			else
 				{
-				header('Location: errorpage.' . traductLib('msgLogin1') . '.htm');		
+				header('Location: errorpage.' . traductLib('msgLogin1') . '.htm');
 			}
 		}
 		else
-			{ 	
-			header('Location: errorpage.'.$logErr.'.htm'); 	
+			{
+			header('Location: errorpage.'.$logErr.'.htm');
 		}
 	}
 

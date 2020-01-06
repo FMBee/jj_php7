@@ -23,9 +23,9 @@ CREATE DEFINER=`upneu`@`localhost` PROCEDURE `app_parameters_maj`(
 							)
     MODIFIES SQL DATA
 UPDATE app_parameters
-   
+
    SET prt_value = _prt_value
- 
+
  WHERE prt_id = _prt_id ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -310,7 +310,7 @@ BEGIN
           fac_totalttc = fac_totalttc + _tot_ttc,
           fac_totaltva = fac_totaltva + (_tot_ttc - _tot_ht)
     WHERE fac_id = _fac_id;
-    
+
 	UPDATE factures set fac_etat = (fac_totalttc = fac_totalregle) where fac_id = _fac_id;
 
    SELECT 1
@@ -335,23 +335,23 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`jj_root`@`localhost` PROCEDURE `factures_close`(  IN _fac_id			int(11) )
 BEGIN
-	
+
 	DECLARE _fac_numero	int(11);
 	DECLARE _datefin	timestamp;
-	
+
 	SELECT par_ProchainNumeroFacture into _fac_numero from parametres
 									 where par_id = 1 ;
-	
+
 	UPDATE parametres	set par_ProchainNumeroFacture = par_ProchainNumeroFacture + 1
 						where par_id = 1 ;
-	
+
 	SELECT sej_fin into _datefin from factures_details
 								 where fac_id = _fac_id ;
-	
+
 	UPDATE factures		set fac_numero = _fac_numero,
 							fac_date = _datefin
 						where fac_id = _fac_id ;
-						
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -369,38 +369,38 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`jj_root`@`localhost` PROCEDURE `factures_delpre`(	IN _fac_id			int(11),
-							IN _fli_numlig      int(11),  
+							IN _fli_numlig      int(11),
                             OUT _retour  	    int(1) )
 BEGIN
-	
+
 	declare _tot_ttc	double;
 	declare _tot_ht		double;
 	declare _cpt		int(10);
-	
-	SELECT 0 into _retour ;					
-	
+
+	SELECT 0 into _retour ;
+
 	SELECT count(*) 	into _cpt from factures_lignes
 						where fli_fac_id = _fac_id ;
-						
+
 	if _cpt > 1 then
-						
-		SELECT fli_totalttc, fli_totalht 	into _tot_ttc, _tot_ht from factures_lignes 
+
+		SELECT fli_totalttc, fli_totalht 	into _tot_ttc, _tot_ht from factures_lignes
 											where fli_fac_id = _fac_id and fli_numlig = _fli_numlig ;
-		
+
 		DELETE from factures_lignes where fli_fac_id = _fac_id and fli_numlig = _fli_numlig ;
-							  
+
 		UPDATE factures set
 							fac_totalht		= fac_totalht - _tot_ht,
 							fac_totalttc	= fac_totalttc - _tot_ttc,
 							fac_totaltva	= fac_totaltva - ( _tot_ttc - _tot_ht )
 						where fac_id = _fac_id ;
-		
+
 		UPDATE factures set fac_etat = (fac_totalttc = fac_totalregle) where fac_id = _fac_id;
 
 		SELECT 1 into _retour ;
-		
+
 	end if;
-	
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -501,54 +501,54 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`upneu`@`localhost` PROCEDURE `parametres_maj`(
-							IN _par_id                             int(11),         
-							IN _par_societe                        varchar(255),    
-							IN _par_rue                            varchar(255),    
-							IN _par_complement                     varchar(255),    
-							IN _par_codepostal                     varchar(20),     
-							IN _par_ville                          varchar(255),    
-							IN _par_pays                           varchar(255),    
-							IN _par_email                          varchar(150),    
-							IN _par_siret                          varchar(255),    
-							IN _par_codenaf                        varchar(10),     
-							IN _par_responsable                    varchar(255),    
-							IN _par_CodeJournalVente               varchar(20),     
-							IN _par_CodeJournalBanque              varchar(20),     
-							IN _par_telfixe                        varchar(20),     
-							IN _par_portable                       varchar(20),     
-							IN _par_iban                           varchar(34),     
-							IN _par_TvaIntracom                    varchar(16), 
+							IN _par_id                             int(11),
+							IN _par_societe                        varchar(255),
+							IN _par_rue                            varchar(255),
+							IN _par_complement                     varchar(255),
+							IN _par_codepostal                     varchar(20),
+							IN _par_ville                          varchar(255),
+							IN _par_pays                           varchar(255),
+							IN _par_email                          varchar(150),
+							IN _par_siret                          varchar(255),
+							IN _par_codenaf                        varchar(10),
+							IN _par_responsable                    varchar(255),
+							IN _par_CodeJournalVente               varchar(20),
+							IN _par_CodeJournalBanque              varchar(20),
+							IN _par_telfixe                        varchar(20),
+							IN _par_portable                       varchar(20),
+							IN _par_iban                           varchar(34),
+							IN _par_TvaIntracom                    varchar(16),
 							IN _par_DebutListeSejours              varchar(16),
-							IN _par_NbJoursHisto	               int(11)  
+							IN _par_NbJoursHisto	               int(11)
    							)
     MODIFIES SQL DATA
     COMMENT 'Gestion des parametres'
 BEGIN
-   
+
       UPDATE parametres
-      
-         SET 
-			par_societe                = _par_societe,                     
-			par_rue                    = _par_rue,                         
-			par_complement             = _par_complement,                  
-			par_codepostal             = _par_codepostal,                  
-			par_ville                  = _par_ville,                       
-			par_pays                   = _par_pays,                        
-			par_email                  = _par_email,                       
-			par_siret                  = _par_siret,                       
-			par_codenaf                = _par_codenaf,                     
-			par_responsable            = _par_responsable,                 
-			par_CodeJournalVente       = _par_CodeJournalVente,            
-			par_CodeJournalBanque      = _par_CodeJournalBanque,           
-			par_telfixe                = _par_telfixe,                     
-			par_portable               = _par_portable,                    
-			par_iban                   = _par_iban,                        
-			par_TvaIntracom            = _par_TvaIntracom,               
-			par_DebutListeSejours      = _par_DebutListeSejours,                 
-			par_NbJoursHisto      	   = _par_NbJoursHisto                 
-				
+
+         SET
+			par_societe                = _par_societe,
+			par_rue                    = _par_rue,
+			par_complement             = _par_complement,
+			par_codepostal             = _par_codepostal,
+			par_ville                  = _par_ville,
+			par_pays                   = _par_pays,
+			par_email                  = _par_email,
+			par_siret                  = _par_siret,
+			par_codenaf                = _par_codenaf,
+			par_responsable            = _par_responsable,
+			par_CodeJournalVente       = _par_CodeJournalVente,
+			par_CodeJournalBanque      = _par_CodeJournalBanque,
+			par_telfixe                = _par_telfixe,
+			par_portable               = _par_portable,
+			par_iban                   = _par_iban,
+			par_TvaIntracom            = _par_TvaIntracom,
+			par_DebutListeSejours      = _par_DebutListeSejours,
+			par_NbJoursHisto      	   = _par_NbJoursHisto
+
        WHERE par_id = _par_id ;
-       
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -583,42 +583,42 @@ BEGIN
    IF _pre_id <= 0
    THEN
       INSERT INTO prestations(
-      						pre_pty_code, 	
-							pre_libelle, 	
+      						pre_pty_code,
+							pre_libelle,
 							pre_descriptif,
-							pre_comptetva, 
-							pre_tauxtva, 	
-							pre_compteht, 	
-							pre_puht, 		
-							pre_puttc, 	
-							pre_prixttc 
-							) 	
+							pre_comptetva,
+							pre_tauxtva,
+							pre_compteht,
+							pre_puht,
+							pre_puttc,
+							pre_prixttc
+							)
            VALUES (
-           		   	_pre_pty_code, 	  
-					_pre_libelle, 	  
-					_pre_descriptif,   
-					_pre_comptetva,    
-					_pre_tauxtva, 	  
-					_pre_compteht, 	  
-					_pre_puht, 		  
-					_pre_puttc, 	      
-					_pre_prixttc       
+           		   	_pre_pty_code,
+					_pre_libelle,
+					_pre_descriptif,
+					_pre_comptetva,
+					_pre_tauxtva,
+					_pre_compteht,
+					_pre_puht,
+					_pre_puttc,
+					_pre_prixttc
            			 );
    ELSE
-   
+
       UPDATE prestations
-      
-         SET 
-         		pre_pty_code =  	_pre_pty_code, 	      
-				pre_libelle =  	    _pre_libelle, 	   
-				pre_descriptif =    _pre_descriptif,   
-				pre_comptetva =     _pre_comptetva,    
-				pre_tauxtva =  	    _pre_tauxtva, 	   
-				pre_compteht =  	_pre_compteht, 	     
-				pre_puht =  		_pre_puht, 		     
-				pre_puttc =  	    _pre_puttc, 	     
+
+         SET
+         		pre_pty_code =  	_pre_pty_code,
+				pre_libelle =  	    _pre_libelle,
+				pre_descriptif =    _pre_descriptif,
+				pre_comptetva =     _pre_comptetva,
+				pre_tauxtva =  	    _pre_tauxtva,
+				pre_compteht =  	_pre_compteht,
+				pre_puht =  		_pre_puht,
+				pre_puttc =  	    _pre_puttc,
 				pre_prixttc =       _pre_prixttc
-				
+
        WHERE pre_id = _pre_id ;
    END IF;
 END ;;
@@ -708,26 +708,26 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`upneu`@`localhost` PROCEDURE `reglements_maj`(
-						  	IN _reg_id            	int(11),      
-							IN _reg_date            varchar(25),  
-							IN _reg_mode            varchar(5),   
-							IN _reg_libelle         varchar(255), 
+						  	IN _reg_id            	int(11),
+							IN _reg_date            varchar(25),
+							IN _reg_mode            varchar(5),
+							IN _reg_libelle         varchar(255),
 							IN _reg_remise          varchar(25)
    							)
     MODIFIES SQL DATA
     COMMENT 'Gestion des reglements'
 BEGIN
-   
+
       UPDATE reglements
-      
-         SET 
-         		reg_date   =  str_to_date(_reg_date, '%d/%m/%Y'),     
-				reg_mode   =  _reg_mode,     
-				reg_libelle=  _reg_libelle,  
-				reg_remise =  str_to_date(_reg_remise, '%d/%m/%Y')    
-				
+
+         SET
+         		reg_date   =  str_to_date(_reg_date, '%d/%m/%Y'),
+				reg_mode   =  _reg_mode,
+				reg_libelle=  _reg_libelle,
+				reg_remise =  str_to_date(_reg_remise, '%d/%m/%Y')
+
        WHERE reg_id = _reg_id ;
-       
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -830,7 +830,7 @@ DELIMITER ;;
 CREATE DEFINER=`jj_root`@`localhost` PROCEDURE `sejours_clients_add`(	IN _scl_sej_id       int(11),
                          		IN _scl_cli_id       int(11) )
 BEGIN
-		
+
 	INSERT INTO sejours_clients (	scl_sej_id,
 									scl_cli_id,
 									scl_etat,
@@ -860,18 +860,18 @@ CREATE DEFINER=`jj_root`@`localhost` PROCEDURE `sejours_clients_del`(	IN _scl_se
 BEGIN
 
  	DECLARE _fac_id int(11);
- 	
-	SELECT scl_fac_id INTO _fac_id FROM sejours_clients 
+
+	SELECT scl_fac_id INTO _fac_id FROM sejours_clients
 						WHERE scl_sej_id = _scl_sej_id AND scl_cli_id = _scl_cli_id ;
-						
+
 	DELETE FROM sejours_clients WHERE scl_sej_id = _scl_sej_id AND scl_cli_id = _scl_cli_id ;
-	
+
 	IF _fac_id != 0 THEN
-	
+
 		DELETE FROM factures WHERE fac_id = _fac_id;
-		
+
 		DELETE FROM factures_lignes WHERE fli_fac_id = _fac_id;
-		
+
 	END IF;
 END ;;
 DELIMITER ;
@@ -892,22 +892,22 @@ DELIMITER ;;
 CREATE DEFINER=`upneu`@`localhost` PROCEDURE `sejours_del`( IN _sej_id			int(11),
                                OUT _retour  	    int(1) )
 BEGIN
-	
+
 	declare _cpt		int(10);
-	
-	SELECT 0 into _retour ;					
-	
+
+	SELECT 0 into _retour ;
+
 	SELECT count(*) 	into _cpt from sejours_clients
-						where scl_sej_id = _sej_id ;	
-											
+						where scl_sej_id = _sej_id ;
+
 	if _cpt = 0 then
-						
+
 		DELETE from sejours where sej_id = _sej_id ;
-							  
+
 		SELECT 1 into _retour ;
-		
+
 	end if;
-	
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -985,7 +985,7 @@ CREATE DEFINER=`jj_root`@`localhost` PROCEDURE `users_mjad`(IN _usr_id          
 BEGIN
    DECLARE sortie   TIMESTAMP;
 
-   IF usr_id <= 0
+   IF _usr_id <= 0
    THEN
       INSERT INTO users(usr_first_name,
                         usr_last_name,
@@ -1006,7 +1006,7 @@ BEGIN
    ELSE
       SET sortie = NULL;
 
-      IF usr_out = 1
+      IF _usr_out = 1
       THEN
          SET sortie = now();
       END IF;
